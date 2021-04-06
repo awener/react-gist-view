@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect } from 'react';
 
@@ -8,12 +7,10 @@ import {
   Row,
   Col
 } from 'reactstrap';
-import { render } from '@testing-library/react';
 class App extends React.Component {
 
   state = {
-    gists: null,
-    file: []
+    gists: null
   };
 
   componentDidMount() {
@@ -30,24 +27,21 @@ class App extends React.Component {
       <Router>
         <Container>
           <Row>
-
-                    <Col xs="4">
-      { gists && 
-                      gists.map(gist => (
-                        <div key={gist.id}>
-                          <Link to={`/g/${gist.id}`}>{gist.id}</Link>
-                        </div>
-                      ))
-                    }
-               </Col>  
-               { gists && 
-                <Route path="/g/:gistId" render={({ match }) => (
-                  <Gist gist={gists.find(g => g.id === match.params.gistId)}/>
-                )}/>
-                }
-           </Row>
-
-
+            <Col xs="4">
+            { gists && 
+              gists.map(gist => (
+                <div key={gist.id}>
+                  <Link to={`/g/${gist.id}`}>{gist.id}</Link>
+                </div>
+              ))
+            }
+            </Col>  
+            { gists && 
+              <Route path="/g/:gistId" render={({ match }) => (
+                <Gist gist={gists.find(g => g.id === match.params.gistId)}/>
+              )}/>
+            }
+          </Row>
         </Container>
       </Router>
       
@@ -59,14 +53,13 @@ class App extends React.Component {
 
   const Gist = ({ gist }) => {
     if (!gist) { return (<>No data</>) }
-
     return (
       <Col xs="8">
         <h2>DESCRIPTION -  {gist.description || 'no description'} ////////////////////</h2>
         <div>
           <h1>FILES</h1>
           { Object.keys(gist.files).map(item => (
-            <Listering key={item} item={gist.files[item]}/>
+            <Listing key={item} item={gist.files[item]}/>
           ))}
         </div>
       </Col>
@@ -74,23 +67,18 @@ class App extends React.Component {
     )
   }
 
-  const Listering = (i) => {
+  const Listing = (i) => {
     const [files, setFiles] = useState({});
     useEffect(() => {
-
       (async () => {
         await fetch(i.item.raw_url).then(n => n.text()).then(file => {
-          console.log(file);
           setFiles({name: i.item.filename, data: file});
-          });
+        });
       })();
-  
     }, []);
-
     if (!i || !i.item) {
       return (<></>);
     }
-    
       
     return (
       <>
